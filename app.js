@@ -152,6 +152,7 @@ function Dinosaurs(data, classList = ["dinosaurs"]) {
   }
 
   return {
+    name: data.name,
     species: data.species,
     weight: parseFloat(data.weight) || 0,
     height: parseFloat(data.height) || 0,
@@ -160,7 +161,6 @@ function Dinosaurs(data, classList = ["dinosaurs"]) {
     when: data.when,
     fact: data.fact,
     image: data.image,
-    classList: classList,
     toInfoGraphicDOM: toInfoGraphicDOM,
     toHeightComparisonDOM: toHeightComparisonDOM,
     toWeightComparisonDOM: toWeightComparisonDOM,
@@ -180,7 +180,7 @@ function Dinosaurs(data, classList = ["dinosaurs"]) {
 function Human(name, weight, height, diet, classList = ["human"]) {
   const data = {
     name: name,
-    species: "Human",
+    species: "H. sapiens",
     weight: parseFloat(weight) || 137,
     height: parseFloat(height) || 67,
     diet: diet,
