@@ -80,47 +80,77 @@ const dinos = [{
   }
 ];
 
-const toDOM = function(h3Content, imagePath, pContent, classList = []) {
-  const div = document.createElement("div");
-  const h2 = document.createElement("h3");
-  const img = document.createElement("img");
-  const p = document.createElement("p");
-  div.classList.add(...classList);
-
-  div.appendChild(h2)
-  div.appendChild(img)
-  div.appendChild(p)
-
-  h2.textContent = h3Content;
-  img.alt = h3Content;
-  img.src = imagePath;
-  p.textContent = pContent;
-
-  return div;
-}
-
-const toInfoGraphicDOM = function() {
-  return toDOM(this.name, this.image, this.fact, ["grid-item", ...this.classList]);
-}
-
-const toHeightComparisonDOM = function(withDom = 11.11) {
-  const dom = toDOM(this.name || this.species, this.image, this.height + " feet", ["height-item", ...this.classList]);
-  dom.style.width = withDom + "%";
-  return dom;
-}
-
-const toWeightComparisonDOM = function(withDom = 100 / 9) {
-  const dom = toDOM(this.name || this.species, this.image, this.weight + " lbs", ["weight-item", ...this.classList]);
-  dom.style.width = withDom + "%";
-  return dom;
-}
-
-const toDietComparisonDOM = function() {
-  return toDOM(this.name || this.species, this.image, this.diet, ["diet-item", ...this.classList, this.diet.toLowerCase()]);
-}
-
-// Create Dino Objects
+/**
+ * @description Dino Objects
+ * @param {Object} data
+ * @param {Array} classList
+ * @returns {Dinosaurs} Dino Objects
+ */
 function Dinosaurs(data, classList = ["dinosaurs"]) {
+  /**
+   * @description Create HTML DOM
+   * @param {string} h3Content content of title
+   * @param {string} imagePath
+   * @param {string} pContent content of fact
+   * @param {string} divClass style of DOM
+   * @returns {HTMLDivElement} HTML DOM
+   */
+  const toDOM = function(h3Content, imagePath, pContent, divClass) {
+    const div = document.createElement("div");
+    const h2 = document.createElement("h3");
+    const img = document.createElement("img");
+    const p = document.createElement("p");
+    div.classList.add(...divClass);
+
+    div.appendChild(h2)
+    div.appendChild(img)
+    div.appendChild(p)
+
+    h2.textContent = h3Content;
+    img.alt = h3Content;
+    img.src = imagePath;
+    p.textContent = pContent;
+
+    return div;
+  }
+
+  /**
+   * @description Create HTML DOM(InfoGraphic)
+   * @returns {HTMLDivElement} HTML DOM
+   */
+  const toInfoGraphicDOM = function() {
+    return toDOM(this.name || this.species, this.image, this.fact, ["grid-item", ...classList]);
+  }
+
+  /**
+   * @description Create HTML DOM(Height Comparison)
+   * @returns {HTMLDivElement} HTML DOM
+   */
+  const toHeightComparisonDOM = function(withDom = 11.11) {
+    const dom = toDOM(this.name || this.species, this.image, this.height + " inches", ["height-item", ...classList]);
+    dom.style.width = withDom + "%";
+    return dom;
+  }
+
+  /**
+   * @description Create HTML DOM(Weight Comparison)
+   * @param {number} withDom with of div
+   * @returns {HTMLDivElement} HTML DOM
+   */
+  const toWeightComparisonDOM = function(withDom = 100 / 9) {
+    const dom = toDOM(this.name || this.species, this.image, this.weight + " lbs", ["weight-item", ...classList]);
+    dom.style.width = withDom + "%";
+    return dom;
+  }
+
+  /**
+   * @description Create HTML DOM(Diet Comparison)
+   * @returns {HTMLDivElement} HTML DOM
+   */
+  const toDietComparisonDOM = function() {
+    return toDOM(this.name || this.species, this.image, this.diet, ["diet-item", ...classList, this.diet.toLowerCase()]);
+  }
+
   return {
     species: data.species,
     weight: parseFloat(data.weight) || 0,
@@ -138,31 +168,34 @@ function Dinosaurs(data, classList = ["dinosaurs"]) {
   }
 }
 
-// Create Human Object
+/**
+ * @description Human Object
+ * @param {string} name
+ * @param {any} weight
+ * @param {any} height
+ * @param {string} diet
+ * @param {string} classList
+ * @returns {Human} Human
+ */
 function Human(name, weight, height, diet, classList = ["human"]) {
-  return {
+  const data = {
     name: name,
-    weight: parseFloat(weight) || 0,
-    height: parseFloat(height) || 0,
+    species: "Human",
+    weight: parseFloat(weight) || 137,
+    height: parseFloat(height) || 67,
     diet: diet,
-    where: "Mars",
-    when: "World Wide",
-    fact: "",
     image: "images/human.png",
-    classList: classList,
-    toInfoGraphicDOM: toInfoGraphicDOM,
-    toHeightComparisonDOM: toHeightComparisonDOM,
-    toWeightComparisonDOM: toWeightComparisonDOM,
-    toDietComparisonDOM: toDietComparisonDOM,
   }
+
+  return Dinosaurs(data, classList);
 }
 
 const form = document.getElementById("dino-compare");
 
-// On form submit, prepare and display infographic
+/** On form submit, prepare and display infographic */
 form.addEventListener("submit", function(event) {
   const name = form.name.value;
-  const height = form.feet.value + "." + form.inches.value;
+  const height = parseFloat(form.feet.value) * 12 + parseFloat(form.inches.value);
   const weight = form.weight.value;
   const diet = form.diet.value;
 
@@ -179,7 +212,11 @@ form.addEventListener("submit", function(event) {
   dietComparison(infographic);
 })
 
-// Generate Tiles for each Dino in Array
+/**
+ * @description generate Infographic
+ * @param {Human} human 
+ * @returns {Array} infographic
+ */
 function generateInfographic(human) {
   const main = document.getElementById("grid");
 
@@ -199,7 +236,10 @@ function generateInfographic(human) {
   return infographic;
 }
 
-// Create Dino Compare Method 1
+/**
+ * Create Dino Compare Height
+ * @param {Array} infographic
+ */
 const heightComparison = function(infographic) {
   document.getElementById("different-height-title").style.display = "initial";
   const differentHeight = document.getElementById("different-height");
@@ -212,7 +252,10 @@ const heightComparison = function(infographic) {
   });
 }
 
-// Create Dino Compare Method 2
+/**
+ * Create Dino Compare Weight
+ * @param {Array} infographic
+ */
 const weightComparison = function(infographic) {
   document.getElementById("different-weight-title").style.display = "initial";
   const differentHeight = document.getElementById("different-weight");
@@ -225,7 +268,10 @@ const weightComparison = function(infographic) {
   });
 }
 
-// Create Dino Compare Method 3
+/**
+ * Create Dino Compare Diet
+ * @param {Array} infographic
+ */
 const dietComparison = function(infographic) {
   document.getElementById("different-diet-title").style.display = "initial";
   const differentHeight = document.getElementById("different-diet");
